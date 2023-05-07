@@ -1,3 +1,5 @@
+import random
+
 class ReplayBuffer:
   
     def __init__(self, max_size = 200):
@@ -31,10 +33,10 @@ class ReplayBuffer:
             self.next_state_buffer.append(next_state)
             self.num_exp +=1
         else:
-            self.state_buffer.popleft()
-            self.action_buffer.popleft()
-            self.reward_buffer.popleft()
-            self.next_state_buffer.popleft()
+            self.state_buffer.pop(0)
+            self.action_buffer.pop(0)
+            self.reward_buffer.pop(0)
+            self.next_state_buffer.pop(0) # why popleft doesn't work?
 
             self.state_buffer.append(state)
             self.action_buffer.append(action)
@@ -42,7 +44,7 @@ class ReplayBuffer:
             self.next_state_buffer.append(next_state)
             
 
-    def sample_transition(self, batch_ind):
+    def sample_transition(self, batch_size):
         """
         Sample a batch of experiences.
 
@@ -64,9 +66,22 @@ class ReplayBuffer:
             done[i] = 1 if executing ation[i] resulted in
             the end of an episode and 0 otherwise.
         """
-        transitions = []
+        #transitions = []
+        size = 0
+        if self.num_exp < batch_size:
+            size = self.num_exp
+        else:
+            size = batch_size
+        
 
-        for i in batch_ind:
-            transitions.append((self.state_buffer[i], self.action_buffer[i], self.reward_buffer[i], self.next_state_buffer[i], False))
-        return transitions
+        state_batch = random.sample(self.state_buffer, size)
+        action_batch = random.sample(self.action_buffer, size)
+        reward_batch = random.sample(self.reward_buffer, size)
+        next_state_batch = random.sample(self.next_state_buffer, size)
+        trunc = [False for _ in range(size)]
+
+
+        # for i in size:
+        #     transitions.append((self.state_buffer[i], self.action_buffer[i], self.reward_buffer[i], self.next_state_buffer[i], False))
+        return state_batch, action_batch, reward_batch, next_state_batch, trunc
  

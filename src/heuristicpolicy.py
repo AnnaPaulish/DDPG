@@ -1,4 +1,5 @@
 import numpy as np
+import torch
 
 class HeuristicPendulumAgent:
   def __init__(self, env, fixed_torque = 1):
@@ -7,8 +8,25 @@ class HeuristicPendulumAgent:
     self.fixed_torque = fixed_torque
   def compute_action(self, state):
     x, y, theta = state
-    if x < 0:
-      action = np.sign(theta)*self.fixed_torque
+    if torch.is_tensor(state):
+
+      action = np.zeros(len(x))
+      for i in range(len(x)):
+        if x[i] < 0:
+          action[i] = np.sign(theta[i])*self.fixed_torque
+        else:
+          action[i] = -np.sign(theta[i])*self.fixed_torque
     else:
-      action = -np.sign(theta)*self.fixed_torque
+      if x < 0:
+        action = np.sign(theta)*self.fixed_torque
+      else:
+        action = -np.sign(theta)*self.fixed_torque
+
+
+    # action[x<0]  = np.sign(theta)*self.fixed_torque
+    # action[x>=0] = -np.sign(theta)*self.fixed_torque
+    # if x < 0:
+    #   action = np.sign(theta)*self.fixed_torque
+    # else:
+    #   action = -np.sign(theta)*self.fixed_torque
     return action
