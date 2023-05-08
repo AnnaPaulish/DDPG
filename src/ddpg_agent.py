@@ -8,13 +8,16 @@ class DDPGAgent:
         self.noisy_action = noisy_action
 
     def compute_action(self, state, deterministic=True):
-        state  = torch.FloatTensor(state)
+        if not torch.is_tensor(state):
+            state  = torch.FloatTensor(state)
         action = self.policy_network(state)  # Process state with the policy network to get an action
+        
 
         if not deterministic:
-            action = self.noisy_action.add_noise(action)
+            action = action.detach().cpu().numpy()[0]
+            action = self.noisy_action.get_noisy_action(action)
 
-        return action.detach().cpu().numpy()[0]
+        return action
     
 # action_noise = GaussianActionNoise(0.5)
  # agent = DDPGAgent(policy_network, action_noise)
