@@ -2,7 +2,7 @@ from matplotlib import pyplot as plt
 from IPython.display import clear_output
 
 
-def subplot(R, P, Q, S):
+def subplot(R, P, Q):
     r = list(zip(*R))
     p = list(zip(*P))
     q = list(zip(*Q))

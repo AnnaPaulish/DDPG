@@ -1,6 +1,7 @@
 import torch.nn as nn
 
 class QNetwork(nn.Module):
+  # critic
   def __init__(self):
     super().__init__()
     self.Lin1 = nn.Linear(4,32)

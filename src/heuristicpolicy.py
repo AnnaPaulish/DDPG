@@ -22,11 +22,4 @@ class HeuristicPendulumAgent:
       else:
         action = -np.sign(theta)*self.fixed_torque
 
-
-    # action[x<0]  = np.sign(theta)*self.fixed_torque
-    # action[x>=0] = -np.sign(theta)*self.fixed_torque
-    # if x < 0:
-    #   action = np.sign(theta)*self.fixed_torque
-    # else:
-    #   action = -np.sign(theta)*self.fixed_torque
     return action

@@ -1,6 +1,7 @@
 import torch.nn as nn
 
 class PolicyNetwork(nn.Module):
+  # actor
   def __init__(self):
     super().__init__()
     self.Lin1 = nn.Linear(3,32)
