@@ -1,6 +1,8 @@
 import numpy as np
 import random
 
+random.seed(10)
+
 class OUActionNoise():
     def __init__(self, std_deviation=1):
         self.std_deviation = std_deviation

@@ -1,6 +1,8 @@
 import random
 import numpy as np
 
+random.seed(10)
+
 class ReplayBuffer:
   
     def __init__(self, max_size = 200):
