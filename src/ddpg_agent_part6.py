@@ -3,13 +3,20 @@ import random
 import torch
 
 class DDPGAgent:
-    def __init__(self, policy_network, noisy_action):
+    def __init__(self, policy_network, noisy_action, target_policy_network):
         self.policy_network = policy_network
+        self.target_policy_network = target_policy_network
         self.noisy_action = noisy_action
 
-    def compute_action(self, state, device, deterministic=True):
+    def compute_action(self, state, device, deterministic=True, target = False):
         state  = torch.FloatTensor(state).unsqueeze(0).to(device)
-        action = self.policy_network(state)
+
+        #network selection for action choice. 
+        if target == False:
+            action = self.policy_network(state)
+        elif target == True:
+            action = self.target_policy_network(state)
+
 
         if not deterministic:
             out = action.detach().cpu().numpy()[0]
