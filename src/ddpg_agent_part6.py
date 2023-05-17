@@ -27,8 +27,9 @@ class DDPGAgent:
         return out
 
     def update_target_params(self, network, target_network, Tau):
-        for p_target, p in zip(target_network.parameters(), network.parameters()):
-            p_target.data = Tau*p.data + (1-Tau)*p_target.data
+        with torch.no_grad():
+            for p_target, p in zip(target_network.parameters(), network.parameters()):
+                p_target.data = Tau*p.data + (1-Tau)*p_target.data
 
 
 

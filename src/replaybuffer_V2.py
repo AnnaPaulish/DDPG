@@ -19,32 +19,28 @@ class ReplayBuffer:
                 overflows the old memories are dropped.
             """
         self.num_exp=0
-        self.buffer = []
-        self.max_size = max_size # buffer size: how many transitions it can store at most
-
+        self.buffer = np.zeros((int(max_size), 9))
+        self.max_size = int(max_size) # buffer size: how many transitions it can store at most
+        self.counter = 0
+        
     def count(self):
-        return self.num_exp
+        return self.counter
     
     def add_transition(self, state, action, reward, next_state, trunc):
-        transition = (state, action, reward, next_state, trunc)
-        if self.num_exp < self.max_size:
-            self.buffer.append(transition)
-            self.num_exp +=1
-        else:
-            self.buffer.pop(0)
-            self.buffer.append(transition)          
+        self.buffer[self.counter % self.max_size, :] = np.array([*state, action, reward, *next_state, trunc])
+        self.counter += 1
+
 
     def sample_transition(self, batch_size):
         """Samples a batch of experiences."""
-        size = 0
-        if self.num_exp < batch_size:
-            size = self.num_exp
+        if self.counter < batch_size:
+            size = self.counter
         else:
             size = batch_size
-        
-        batch_transitions=random.sample(self.buffer, size)
-        state_batch, action_batch, reward_batch, next_state_batch, trunc = map(np.stack, zip(*batch_transitions))
-        print(type(state_batch))
+            
+        if self.counter >= self.max_size:
+            batch_transitions = self.buffer[np.random.randint(low = 0, high = self.max_size, size = size),:]
+        elif self.counter < self.max_size:
+            batch_transitions = self.buffer[np.random.randint(low = 0, high = self.counter, size = size),:]
 
-        return state_batch, action_batch, reward_batch, next_state_batch, trunc
- 
+        return batch_transitions[:,0:3], batch_transitions[:,3],batch_transitions[:,4],batch_transitions[:,5:8], batch_transitions[:,8] 

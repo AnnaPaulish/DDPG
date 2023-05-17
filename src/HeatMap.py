@@ -89,7 +89,7 @@ def Single_HeatMap(Neural_Network, Action = 0, Velocity = 0):
 
 
     cmap = mpl.cm.plasma
-    norm = mpl.colors.Normalize(vmin=torch.min(z), vmax=torch.max(z))
+    norm = mpl.colors.Normalize(vmin=-1300, vmax=0)
 
     fig = plt.figure()
 
